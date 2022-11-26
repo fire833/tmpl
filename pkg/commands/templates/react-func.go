@@ -1,7 +1,7 @@
-
 package templates
 
 import (
+	"os"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
@@ -12,7 +12,8 @@ import (
 
 func NewREACTFUNCTIONALCommand() *cobra.Command {
 	type cmdOpts struct {
-		output *string
+		Output *string
+		Header *string
 	}
 
 	const tmpl string = ""
@@ -26,7 +27,7 @@ func NewREACTFUNCTIONALCommand() *cobra.Command {
 		Long:    "",
 		Version: "0.0.1",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.output)
+			output, oute := utils.GetOutputWriter(*opts.Output)
 			if oute != nil {
 				return oute
 			}
@@ -44,8 +45,12 @@ func NewREACTFUNCTIONALCommand() *cobra.Command {
 
 	set := pflag.NewFlagSet("reactFunctional", pflag.ExitOnError)
 
+	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
+	str := string(data)
+
 	o := cmdOpts{
-		output: set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Output: set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Header: &str,
 	}
 
 	cmd.Flags().AddFlagSet(set)
