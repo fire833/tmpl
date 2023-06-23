@@ -30,7 +30,7 @@ func NewTMPLCommand() *cobra.Command {
 		Aliases: []string{"templates", "tmplt", "t", "tpl"},
 		Short:   "CLI for generating boilerplate for different code things.",
 		Long:    ``,
-		Version: "0.0.1",
+		Version: "0.1.0",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmd.Help()
 		},
@@ -42,7 +42,7 @@ func NewTMPLCommand() *cobra.Command {
 
 	cmd.AddCommand(
 		templates.NewTMPLTMPLCommand(),
-		templates.NewGOCommand(),
+		templates.NewCOBRACommand(),
 		templates.NewK8SDAEMONSETCommand(),
 		templates.NewK8SDEPLOYMENTCommand(),
 		templates.NewK8SINGRESSCommand(),
