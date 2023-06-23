@@ -32,7 +32,9 @@ func New{{.Name|upper}}Command() *cobra.Command {
 		Long:    "",
 		Version: "0.0.1",
 		Example: "",
-		RunE: func(cmd *cobra.Command, args []string) error {},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return nil
+		},
 	}
 
 	set := pflag.NewFlagSet("{{.Name}}", pflag.ExitOnError)
