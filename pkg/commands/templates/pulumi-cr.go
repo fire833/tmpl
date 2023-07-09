@@ -47,7 +47,7 @@ func New{{.Name}}(ctx *pulumi.Context, name string, opts ...pulumi.ResourceOptio
 
 	cmd := &cobra.Command{
 		Use:     "pulumi-cr",
-		Aliases: []string{},
+		Aliases: []string{"pcr"},
 		Short:   "Generate boilerplate for creating new pulumi component resource templates.",
 		Long:    ``,
 		Version: "0.0.1",

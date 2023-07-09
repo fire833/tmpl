@@ -54,7 +54,7 @@ func New{{.Name|upper}}Command() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:     "cobra-cmd",
-		Aliases: []string{},
+		Aliases: []string{"ccmd"},
 		Short:   "Generate boilerplate for creating new go cobra commands.",
 		Long:    ``,
 		Version: "0.1.0",
