@@ -92,7 +92,7 @@ func New{{.Name}}(ctx *pulumi.Context, name string, opts ...pulumi.ResourceOptio
 	str := string(data)
 
 	o := cmdOpts{
-		Output:    set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Output:    set.StringP("output", "o", "tmpl.go", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Header:    &str,
 		Name:      set.StringP("name", "n", "ExampleInstance", "Specify the name of the component resource you wish to create."),
 		Package:   set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),

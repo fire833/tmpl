@@ -67,7 +67,7 @@ func NewREACTFUNCTIONALCommand() *cobra.Command {
 	str := string(data)
 
 	o := cmdOpts{
-		Output: set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Output: set.StringP("output", "o", "tmpl.tsx", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Header: &str,
 	}
 

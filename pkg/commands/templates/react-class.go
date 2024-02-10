@@ -93,7 +93,7 @@ export default class {{.Name}} extends Component<{{.Name}}Props, {{.Name}}State>
 	str := string(data)
 
 	o := cmdOpts{
-		Output: set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Output: set.StringP("output", "o", "tmpl.tsx", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Header: &str,
 		Name:   set.StringP("compname", "n", "KTComponent", "Specify the name of the component you wish to create."),
 	}
