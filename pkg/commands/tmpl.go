@@ -51,6 +51,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewREACTFUNCTIONALCommand(),
 		templates.NewRUSTCommand(),
 		templates.NewPULUMICRCommand(),
+		templates.NewSVELTECCommand(),
 	)
 
 	return cmd
