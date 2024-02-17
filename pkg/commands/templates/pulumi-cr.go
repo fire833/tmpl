@@ -36,6 +36,7 @@ func NewPULUMICRCommand() *cobra.Command {
 		Package   *string
 		Module    *string
 		Namespace *string
+		Args      *bool
 	}
 
 	const tmpl string = `
@@ -49,7 +50,12 @@ type {{.Name}} struct {
 	pulumi.ResourceState
 }
 
-func New{{.Name}}(ctx *pulumi.Context, name string, opts ...pulumi.ResourceOption) (*{{.Name}}, error) {
+{{- if .Args }}
+type {{ .Name }}Args struct {
+}
+{{- end }}
+
+func New{{.Name}}(ctx *pulumi.Context, name string{{ if .Args }}, args {{ .Name }}Args{{ end }}, opts ...pulumi.ResourceOption) (*{{.Name}}, error) {
 	c := &{{.Name}}{}
 	if e := ctx.RegisterComponentResource("{{.Module}}:{{.Namespace}}:{{.Name}}", name, c, opts...); e != nil {
 		return nil, e
@@ -98,6 +104,7 @@ func New{{.Name}}(ctx *pulumi.Context, name string, opts ...pulumi.ResourceOptio
 		Package:   set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
 		Module:    set.StringP("module", "m", "unknown", "Specify the high-level module this component resource is a part of."),
 		Namespace: set.String("namespace", "unknown", "Specify the namespace for this component resource within your overall stack."),
+		Args:      set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
 	}
 
 	cmd.Flags().AddFlagSet(set)
