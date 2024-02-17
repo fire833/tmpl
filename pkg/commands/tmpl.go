@@ -52,6 +52,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewRUSTCommand(),
 		templates.NewPULUMICRCommand(),
 		templates.NewSVELTECCommand(),
+		templates.NewJAVAOPENGLCommand(),
 	)
 
 	return cmd
