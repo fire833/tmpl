@@ -1,7 +1,7 @@
 //go:build mage
 
 /*
-*	Copyright (C) 2024 Kendall Tauser
+*	Copyright (C) 2025 Kendall Tauser
 *
 *	This program is free software; you can redistribute it and/or modify
 *	it under the terms of the GNU General Public License as published by
