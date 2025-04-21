@@ -45,10 +45,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
-	
+
+const appName string = "{{ .Name }}"
+
 func New{{.Name|upper}}Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "{{.Name}}",
+		Use:     appName,
 		Aliases: []string{},
 		Short:   "",
 		Long:    "",
@@ -59,7 +61,7 @@ func New{{.Name|upper}}Command() *cobra.Command {
 		},
 	}
 
-	set := pflag.NewFlagSet("{{.Name}}", pflag.ExitOnError)
+	set := pflag.NewFlagSet(appName, pflag.ExitOnError)
 
 	cmd.Flags().AddFlagSet(set)
 	cmd.AddCommand()
