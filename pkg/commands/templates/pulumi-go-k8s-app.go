@@ -1,3 +1,21 @@
+/*
+*	Copyright (C) 2025 Kendall Tauser
+*
+*	This program is free software; you can redistribute it and/or modify
+*	it under the terms of the GNU General Public License as published by
+*	the Free Software Foundation; either version 2 of the License, or
+*	(at your option) any later version.
+*
+*	This program is distributed in the hope that it will be useful,
+*	but WITHOUT ANY WARRANTY; without even the implied warranty of
+*	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*	GNU General Public License for more details.
+*
+*	You should have received a copy of the GNU General Public License along
+*	with this program; if not, write to the Free Software Foundation, Inc.,
+*	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package templates
 
 import (
@@ -12,11 +30,13 @@ import (
 
 func NewPULUMIGOK8SAPPCommand() *cobra.Command {
 	type cmdOpts struct {
-		Output  *string
-		Header  *string
-		Name    *string
-		Package *string
-		Args    *bool
+		Output    *string
+		Header    *string
+		Name      *string
+		Module    *string
+		Namespace *string
+		Package   *string
+		Args      *bool
 	}
 
 	const tmpl string = `
@@ -31,8 +51,7 @@ import (
 
 type {{ .Name }}App struct {
 	pulumi.ResourceState
-
-	resources *appresources.SimpleAppResources
+	appresources.SimpleAppResources
 }
 
 {{- if .Args }}
@@ -49,11 +68,14 @@ func new{{.Name}}Pod(name namers.AppNamer, volumes v1.VolumeArrayInput, volumeMo
 	return k8sutils.NewPod(name, "", "", bools, volumes, v1.ContainerArray{new{{.Name}}Container(name, volumeMounts)}, v1.ContainerArray{})
 }
 
-// Instantiate a new instance of {{ .Name }}App
-func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string{{ if .Args }}, args {{ .Name }}AppArgs{{ end }}, opts ...pulumi.ResourceOption) *{{ .Name }}App {
-	return &{{ .Name }}App{
-		resources: &appresources.SimpleAppResources{},
+// Instantiate a new instance of {{ .Name }}App.
+func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string{{ if .Args }}, args {{ .Name }}AppArgs{{ end }}, opts ...pulumi.ResourceOption) (*{{ .Name }}App, error) {
+	c := &{{.Name}}App{}
+	if e := ctx.RegisterComponentResource("{{.Module}}:{{.Namespace}}:{{.Name}}App", string(name), c, opts...); e != nil {
+		return nil, e
 	}
+
+	return c, nil
 }
 `
 
@@ -64,7 +86,7 @@ func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string
 		Aliases: []string{"pgk8s"},
 		Short:   "Generate boilerplate for creating new pulumigoK8sApp templates.",
 		Long:    "",
-		Version: "0.0.1",
+		Version: "0.2.0",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			output, oute := utils.GetOutputWriter(*opts.Output)
 			if oute != nil {
@@ -88,11 +110,13 @@ func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string
 	str := string(data)
 
 	o := cmdOpts{
-		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:  &str,
-		Name:    set.StringP("name", "n", "Example", "Specify the name of the component resource you wish to create."),
-		Package: set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
-		Args:    set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
+		Output:    set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Header:    &str,
+		Name:      set.StringP("name", "n", "Example", "Specify the name of the component resource you wish to create."),
+		Package:   set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
+		Module:    set.StringP("module", "m", "unknown", "Specify the high-level module this component resource is a part of."),
+		Namespace: set.String("namespace", "unknown", "Specify the namespace for this component resource within your overall stack."),
+		Args:      set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
 	}
 
 	cmd.Flags().AddFlagSet(set)
