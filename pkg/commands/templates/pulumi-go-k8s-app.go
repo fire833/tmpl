@@ -16,6 +16,7 @@ func NewPULUMIGOK8SAPPCommand() *cobra.Command {
 		Header  *string
 		Name    *string
 		Package *string
+		Args    *bool
 	}
 
 	const tmpl string = `
@@ -28,19 +29,33 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func new{{.Name}}Container(name namers.AppNamer, volumeMounts v1.VolumeMountArrayInput) *v1.ContainerArgs {
+type {{ .Name }}App struct {
+	pulumi.ResourceState
+
+	resources *appresources.SimpleAppResources
+}
+
+{{- if .Args }}
+type {{ .Name }}AppArgs struct {
+}
+{{- end }}
+
+func (a *{{ .Name }}App) new{{.Name}}Container(name namers.AppNamer, volumeMounts v1.VolumeMountArrayInput) *v1.ContainerArgs {
 	return k8sutils.NewContainer(name, "", versions.{{.Name}}AppVersion, consts.ImagePullPolicyIfNotPresent, []string{}, []string{}, map[string]uint16{}, k8sutils.NewPodEnvVarsWithBasics(map[string]string{}), k8sutils.NewContainerResources("", "", "", ""), k8sutils.NewSecuritySettingsLockdown(), volumeMounts, nil, nil, nil)
 }
 
-func new{{.Name}}Pod(name namers.AppNamer, volumes v1.VolumeArrayInput, volumeMounts v1.VolumeMountArrayInput) *v1.PodSpecArgs {
+func (a *{{ .Name }}App) new{{.Name}}Pod(name namers.AppNamer, volumes v1.VolumeArrayInput, volumeMounts v1.VolumeMountArrayInput) *v1.PodSpecArgs {
 	bools := k8sutils.PodBooleans(0)
-	return k8sutils.NewPod(name, "", "", bools, volumes, v1.ContainerArray{new{{.Name}}Container(name, volumeMounts)}, v1.ContainerArray{})
+	return k8sutils.NewPod(name, "", "", bools, volumes, v1.ContainerArray{a.new{{.Name}}Container(name, volumeMounts)}, v1.ContainerArray{})
 }
 
-func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string) *appresources.SimpleAppResources {
-	return &appresources.SimpleAppResources{}
+// Instantiate a new instance of {{ .Name }}App
+func (a *{{ .Name }}App) New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string{{ if .Args }}, args {{ .Name }}AppArgs{{ end }}, opts ...pulumi.ResourceOption) *{{ .Name }}App {
+	return &{{ .Name }}App{
+		resources: &appresources.SimpleAppResources{},
+	}
 }
-	`
+`
 
 	var opts cmdOpts
 
@@ -77,6 +92,7 @@ func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string
 		Header:  &str,
 		Name:    set.StringP("name", "n", "Example", "Specify the name of the component resource you wish to create."),
 		Package: set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
+		Args:    set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
 	}
 
 	cmd.Flags().AddFlagSet(set)
