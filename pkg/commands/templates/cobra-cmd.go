@@ -46,9 +46,8 @@ import (
 	"github.com/spf13/pflag"
 )
 
-const appName string = "{{ .Name }}"
-
 func New{{.Name|upper}}Command() *cobra.Command {
+	const appName string = "{{ .Name }}"
 	cmd := &cobra.Command{
 		Use:     appName,
 		Aliases: []string{},
