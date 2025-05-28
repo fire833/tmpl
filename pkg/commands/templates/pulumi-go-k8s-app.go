@@ -77,6 +77,10 @@ func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string
 
 	return c, nil
 }
+
+func (a *{{.Name}}App) Deploy(ctx *pulumi.Context, name namers.AppNamer, opts ...pulumi.ResourceOption) error {
+	return a.SimpleAppResources.Deploy(ctx, a, name, opts...)
+}
 `
 
 	var opts cmdOpts
