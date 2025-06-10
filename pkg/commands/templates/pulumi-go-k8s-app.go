@@ -75,6 +75,8 @@ func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string
 		return nil, e
 	}
 
+	c.SimpleAppResources = appresources.SimpleAppResources{}
+
 	return c, nil
 }
 
