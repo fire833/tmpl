@@ -56,6 +56,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewLATEXARTICLECommand(),
 		templates.NewPULUMIJAVACRCommand(),
 		templates.NewPULUMIGOK8SAPPCommand(),
+		templates.NewADVENTOFCODECHALLENGECommand(),
 	)
 
 	return cmd
