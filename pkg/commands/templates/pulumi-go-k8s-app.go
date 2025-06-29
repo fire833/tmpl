@@ -60,7 +60,12 @@ type {{ .Name }}AppArgs struct {
 {{- end }}
 
 func new{{.Name}}Container(name namers.AppNamer, volumeMounts v1.VolumeMountArrayInput) *v1.ContainerArgs {
-	return k8sutils.NewContainer(name, "", versions.{{.Name}}AppVersion, consts.ImagePullPolicyIfNotPresent, []string{}, []string{}, map[string]uint16{}, k8sutils.NewPodEnvVarsWithBasics(map[string]string{}), k8sutils.NewContainerResources("", "", "", ""), k8sutils.NewSecuritySettingsLockdown(), volumeMounts, nil, nil, nil)
+	return k8sutils.NewContainer(name, "", versions.{{.Name}}AppVersion, consts.ImagePullPolicyIfNotPresent, 
+		[]string{}, []string{}, map[string]uint16{}, 
+		k8sutils.NewPodEnvVarsWithBasics(map[string]string{}), 
+		k8sutils.NewContainerResources("", "", "", ""), 
+		k8sutils.NewSecuritySettingsLockdown(), 
+		volumeMounts, nil, nil, nil)
 }
 
 func new{{.Name}}Pod(name namers.AppNamer, volumes v1.VolumeArrayInput, volumeMounts v1.VolumeMountArrayInput) *v1.PodSpecArgs {
@@ -120,8 +125,8 @@ func (a *{{.Name}}App) Deploy(ctx *pulumi.Context, name namers.AppNamer, opts ..
 		Header:    &str,
 		Name:      set.StringP("name", "n", "Example", "Specify the name of the component resource you wish to create."),
 		Package:   set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
-		Module:    set.StringP("module", "m", "unknown", "Specify the high-level module this component resource is a part of."),
-		Namespace: set.String("namespace", "unknown", "Specify the namespace for this component resource within your overall stack."),
+		Module:    set.StringP("module", "m", "KTIAC", "Specify the high-level module this component resource is a part of."),
+		Namespace: set.String("namespace", "k8s", "Specify the namespace for this component resource within your overall stack."),
 		Args:      set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
 	}
 
