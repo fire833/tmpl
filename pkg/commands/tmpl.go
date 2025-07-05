@@ -58,6 +58,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewPULUMIGOK8SAPPCommand(),
 		templates.NewADVENTOFCODECHALLENGECommand(),
 		templates.NewPULUMISTATELESSWEBAPPCommand(),
+		templates.NewBURNMODULECommand(),
 	)
 
 	return cmd
