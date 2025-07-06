@@ -40,7 +40,7 @@ func NewADVENTOFCODECHALLENGECommand() *cobra.Command {
 
 use crate::AdventOfCodeSolver;
 
-pub struct Day{{ .Day }} {}
+pub struct Day{{ .Day }};
 
 impl AdventOfCodeSolver for Day{{ .Day }} {
 	fn solve(buf: String) -> Result<(String, String), crate::AdventOfCodeError> {
