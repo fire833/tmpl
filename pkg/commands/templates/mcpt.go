@@ -51,11 +51,11 @@ import (
 func New{{ .Name }}Tool() server.ServerTool {
 	return server.ServerTool{
 		Tool: mcp.NewTool("{{ .Name }}", mcp.WithDescription("")),
-		Handler: {{ .Name | camelcase }}Tool,
+		Handler: {{ .Name | lower }}Tool,
 	}
 }
 
-func {{ .Name | camelcase }}Tool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+func {{ .Name | lower }}Tool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	return mcp.NewToolResultError("not implemented"), nil
 }
 `
