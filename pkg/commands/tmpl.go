@@ -60,6 +60,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewPULUMISTATELESSWEBAPPCommand(),
 		templates.NewBURNMODULECommand(),
 		templates.NewMCPTOOLCommand(),
+		templates.NewMCPPromptCommand(),
 	)
 
 	return cmd
