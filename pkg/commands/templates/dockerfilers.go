@@ -38,7 +38,7 @@ RUN RUSTFLAGS='-C link-arg=-s' cargo build --release --bin {{ .AppName }}
 FROM docker.io/ubuntu:noble
 
 COPY --from=builder /usr/local/bin/dumb-init /usr/local/bin/dumb-init
-COPY --from=builder /usr/src/{{ .AppName }}/target/release/{{ .AppName }} /usr/local/bin/{{ .AppName }}l
+COPY --from=builder /usr/src/{{ .AppName }}/target/release/{{ .AppName }} /usr/local/bin/{{ .AppName }}
 USER 1000:1000
 
 LABEL org.opencontainers.image.author="{{ .Author }}"
