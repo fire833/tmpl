@@ -36,7 +36,13 @@ func New{{ .Name }}Prompt() server.ServerPrompt {
 }
 
 func new{{ .Name | lower }}Prompt(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
-	return mcp.NewGetPromptResult("unimplemented", []mcp.PromptMessage{}), nil
+	return mcp.NewGetPromptResult("unimplemented", []mcp.PromptMessage{
+		
+	}), nil
+}
+
+func New{{ .Name | lower }}PromptText() string {
+	return ""
 }
 `
 
