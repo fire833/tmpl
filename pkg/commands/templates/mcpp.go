@@ -33,17 +33,17 @@ import (
 func New{{ .Name }}Prompt() server.ServerPrompt {
 	return server.ServerPrompt{
 		Prompt:  mcp.NewPrompt("{{ .Name }}", mcp.WithPromptDescription("")),
-		Handler: new{{ .Name | lower }}Prompt,
+		Handler: new{{ .Name }}Prompt,
 	}
 }
 
-func new{{ .Name | lower }}Prompt(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
+func new{{ .Name }}Prompt(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
 	return mcp.NewGetPromptResult("unimplemented", []mcp.PromptMessage{
 
 	}), nil
 }
 
-func New{{ .Name | lower }}PromptText() string {
+func New{{ .Name }}PromptText() string {
 	return ""
 }
 `
