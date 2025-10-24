@@ -12,8 +12,10 @@ import (
 
 func NewMCPPromptCommand() *cobra.Command {
 	type cmdOpts struct {
-		Output *string
-		Header *string
+		Output  *string
+		Header  *string
+		Name    *string
+		Package *string
 	}
 
 	const tmpl string = `
@@ -37,7 +39,7 @@ func New{{ .Name }}Prompt() server.ServerPrompt {
 
 func new{{ .Name | lower }}Prompt(ctx context.Context, request mcp.GetPromptRequest) (*mcp.GetPromptResult, error) {
 	return mcp.NewGetPromptResult("unimplemented", []mcp.PromptMessage{
-		
+
 	}), nil
 }
 
@@ -77,8 +79,10 @@ func New{{ .Name | lower }}PromptText() string {
 	str := string(data)
 
 	o := cmdOpts{
-		Output: set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header: &str,
+		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Header:  &str,
+		Name:    set.StringP("name", "n", "", "Specify the name of this prompt."),
+		Package: set.StringP("package", "p", "templates", "Specify the output package for this new prompt template being created."),
 	}
 
 	cmd.Flags().AddFlagSet(set)

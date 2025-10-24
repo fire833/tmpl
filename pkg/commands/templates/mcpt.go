@@ -94,7 +94,7 @@ func {{ .Name | lower }}Tool(ctx context.Context, request mcp.CallToolRequest) (
 		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Header:  &str,
 		Name:    set.StringP("name", "n", "", "Specify the name of this tool."),
-		Package: set.StringP("package", "p", "templates", "Specify the output package for this new template being created."),
+		Package: set.StringP("package", "p", "templates", "Specify the output package for this new tool template being created."),
 	}
 
 	cmd.Flags().AddFlagSet(set)
