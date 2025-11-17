@@ -63,6 +63,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewMCPPromptCommand(),
 		templates.NewRUSTDOCKERFILECommand(),
 		templates.NewGODOCKERFILECommand(),
+		templates.NewGOSUBSYSTEMCommand(),
 	)
 
 	return cmd
