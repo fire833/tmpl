@@ -40,7 +40,7 @@ type {{ .SubsystemName }}Manager struct {
 	isShutdown    bool
 }
 
-func New{{ .SubsystemName }}Manager() *{{ .SubsystemName }}Manager {
+func New() *{{ .SubsystemName }}Manager {
 	return &{{ .SubsystemName }}Manager{
 		isInitialized: false,
 		isShutdown:    false,
