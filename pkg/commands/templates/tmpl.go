@@ -19,6 +19,7 @@
 package templates
 
 import (
+	"os"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
@@ -29,12 +30,15 @@ import (
 
 func NewTMPLTMPLCommand() *cobra.Command {
 	type cmdOpts struct {
+		Header  *string
 		Output  *string
 		Name    *string
 		Package *string
 	}
 
 	const tmpl string = `
+{{ .Header }}
+
 package {{.Package}}
 
 import (
@@ -124,7 +128,11 @@ func New{{.Name|upper}}Command() *cobra.Command {
 
 	set := pflag.NewFlagSet("tmpltmpl", pflag.ExitOnError)
 
+	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
+	str := string(data)
+
 	o := cmdOpts{
+		Header:  &str,
 		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Name:    set.StringP("name", "n", "example", "Specify the name for this template, this will be plugged into the template and be the command name."),
 		Package: set.StringP("package", "p", "templates", "Specify the output package for this new template being created."),
