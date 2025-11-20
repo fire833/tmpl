@@ -93,6 +93,7 @@ func (j *{{ .JobName }}) Run(ctx context.Context) error {
 		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
 		Header:  &str,
 		JobName: set.StringP("name", "n", "unknown", "Specify the name of the KTJob."),
+		Package: set.StringP("package", "p", "unknown", "Specify the package name for the generated file."),
 	}
 
 	cmd.Flags().AddFlagSet(set)
