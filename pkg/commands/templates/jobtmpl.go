@@ -62,7 +62,7 @@ func (j *{{ .JobName }}) Run(ctx context.Context) error {
 	var opts cmdOpts
 
 	cmd := &cobra.Command{
-		Use:     "Job",
+		Use:     "ktjob",
 		Aliases: []string{},
 		Short:   "Generate boilerplate for creating new KTJobs.",
 		Long:    "",
