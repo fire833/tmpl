@@ -65,6 +65,7 @@ func NewTMPLCommand() *cobra.Command {
 		templates.NewGODOCKERFILECommand(),
 		templates.NewGOSUBSYSTEMCommand(),
 		templates.NewJOBCommand(),
+		templates.NewPULUMIPYTHONCRCommand(),
 	)
 
 	return cmd
