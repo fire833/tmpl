@@ -23,15 +23,22 @@ func NewPULUMIPYTHONCRCommand() *cobra.Command {
 
 	const tmpl string = `
 {{.Header}}
-from typing import Optional
 from pulumi import ComponentResource, ResourceOptions
 {{ if .Args }}
 class {{ .Name }}Args:
+	"""
+	
+	"""
+
 	pass
 {{- end }}
 
 class {{ .Name }}(ComponentResource):
-	def __init__(self, name, {{ if .Args }}args: {{ .Name }}Args, {{ end }}opts: Optional[ResourceOptions] = None):
+	"""
+	
+	"""
+
+	def __init__(self, name: str, {{ if .Args }}args: {{ .Name }}Args, {{ end }}opts: ResourceOptions | None = None) -> None:
 		super().__init__('{{.Module}}:{{.Namespace}}:{{.Name}}', name, None, opts)
 `
 
