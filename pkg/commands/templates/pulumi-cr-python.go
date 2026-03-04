@@ -27,8 +27,11 @@ from pulumi import ComponentResource, ResourceOptions
 {{ if .Args }}
 class {{ .Name }}Args:
 	"""
-	
+	Arguments to pass to {{ .Name }}.
 	"""
+
+	def __init__(self) -> None:
+		pass
 
 	pass
 {{- end }}
