@@ -33,12 +33,10 @@ class {{ .Name }}Args:
 	def __init__(self) -> None:
 		pass
 
-	pass
 {{- end }}
 
 class {{ .Name }}(ComponentResource):
 	"""
-	
 	"""
 
 	def __init__(self, name: str, {{ if .Args }}args: {{ .Name }}Args, {{ end }}opts: ResourceOptions | None = None) -> None:
