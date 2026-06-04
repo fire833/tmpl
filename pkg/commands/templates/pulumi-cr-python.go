@@ -40,7 +40,7 @@ class {{ .Name }}(ComponentResource):
 	"""
 
 	def __init__(self, name: str, {{ if .Args }}args: {{ .Name }}Args, {{ end }}opts: ResourceOptions | None = None) -> None:
-		super().__init__('{{.Module}}:{{.Namespace}}:{{.Name}}', name, None, opts)
+		super().__init__("{{.Module}}:{{.Namespace}}:{{.Name}}", name, None, opts)
 `
 
 	var opts cmdOpts
