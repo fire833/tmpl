@@ -23,16 +23,15 @@ func NewPULUMIPYTHONCRCommand() *cobra.Command {
 
 	const tmpl string = `
 {{.Header}}
+from dataclasses import dataclass
+
 from pulumi import ComponentResource, ResourceOptions
 {{ if .Args }}
+@dataclass(kw_only=True)
 class {{ .Name }}Args:
 	"""
 	Arguments to pass to {{ .Name }}.
 	"""
-
-	def __init__(self) -> None:
-		pass
-
 {{- end }}
 
 class {{ .Name }}(ComponentResource):
