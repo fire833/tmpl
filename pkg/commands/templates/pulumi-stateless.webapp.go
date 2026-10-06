@@ -82,6 +82,12 @@ func new{{.Name}}Pod(name namers.AppNamer, listenPort uint16, volumes v1.VolumeA
 
 // Instantiate a new instance of {{ .Name }}App.
 func New{{.Name}}App(ctx *pulumi.Context, name namers.AppNamer, namespace string{{ if .Args }}, args {{ .Name }}AppArgs{{ end }}, opts ...pulumi.ResourceOption) (*{{ .Name }}App, error) {
+{{- if .Args }}
+	if e := validation.Validate(args); e != nil {
+		return nil, e
+	}
+{{- end }}
+
 	c := &{{.Name}}App{}
 	if e := ctx.RegisterComponentResource("{{.Module}}:{{.Namespace}}:{{.Name}}App", string(name), c, opts...); e != nil {
 		return nil, e

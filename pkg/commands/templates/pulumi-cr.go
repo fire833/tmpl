@@ -44,7 +44,12 @@ func NewPULUMICRCommand() *cobra.Command {
 
 package {{.Package}}
 
-import "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+import (
+	"fmt"
+
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+	"github.com/go-playground/validator/v10"
+)
 
 type {{.Name}} struct {
 	pulumi.ResourceState
@@ -56,6 +61,12 @@ type {{ .Name }}Args struct {
 {{- end }}
 
 func New{{.Name}}(ctx *pulumi.Context, name string{{ if .Args }}, args {{ .Name }}Args{{ end }}, opts ...pulumi.ResourceOption) (*{{.Name}}, error) {
+{{- if .Args }}
+	if e := validation.Validate(args); e != nil {
+		return nil, e
+	}
+{{- end }}
+
 	c := &{{.Name}}{}
 	if e := ctx.RegisterComponentResource("{{.Module}}:{{.Namespace}}:{{.Name}}", name, c, opts...); e != nil {
 		return nil, e
