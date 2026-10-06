@@ -62,7 +62,7 @@ type {{ .Name }}Args struct {
 
 func New{{.Name}}(ctx *pulumi.Context, name string{{ if .Args }}, args {{ .Name }}Args{{ end }}, opts ...pulumi.ResourceOption) (*{{.Name}}, error) {
 {{- if .Args }}
-	if e := validation.Validate(args); e != nil {
+	if e := validation.Validate("{{ .Name }}", args); e != nil {
 		return nil, e
 	}
 {{- end }}
