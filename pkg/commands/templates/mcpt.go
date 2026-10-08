@@ -19,10 +19,6 @@
 package templates
 
 import (
-	"os"
-	"text/template"
-
-	"github.com/Masterminds/sprig/v3"
 	"github.com/fire833/tmpl/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -34,8 +30,8 @@ func NewMCPTOOLCommand() *cobra.Command {
 		Header      *string
 		Name        *string
 		Package     *string
-		Readonly    *bool
-		Destructive *bool
+		Readonly    bool
+		Destructive bool
 	}
 
 	const tmpl string = `
@@ -74,38 +70,25 @@ func {{ .Name | lower }}Tool(ctx context.Context, request mcp.CallToolRequest) (
 		Long:    "",
 		Version: "0.2.0",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.Output)
-			if oute != nil {
-				return oute
-			}
-
-			defer output.Close()
-
-			tpl, tple := template.New("mcptool").Funcs(sprig.TxtFuncMap()).Parse(tmpl)
-			if tple != nil {
-				return tple
-			}
-
-			return tpl.Execute(output, opts)
+			return utils.RenderTemplateToOutput(cmd.OutOrStdout(), *opts.Output, "mcptool", tmpl, opts)
 		},
 	}
 
 	set := pflag.NewFlagSet("mcptool", pflag.ExitOnError)
 
-	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
-	str := string(data)
-
 	o := cmdOpts{
-		Output:      set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:      &str,
-		Name:        set.StringP("name", "n", "", "Specify the name of this tool."),
-		Package:     set.StringP("package", "p", "templates", "Specify the output package for this new tool template being created."),
-		Destructive: set.BoolP("destructive", "d", false, "Is this tool capable of performing destructive actions?"),
-		Readonly:    set.BoolP("readonly", "r", false, "Is this tool readonly?"),
+		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Header:  utils.HeaderFlag(set),
+		Name:    set.StringP("name", "n", "", "Specify the name of this tool."),
+		Package: set.StringP("package", "p", "templates", "Specify the output package for this new tool template being created."),
 	}
 
-	cmd.Flags().AddFlagSet(set)
+	// Bools are bound by value, since a template treats any non-nil *bool as true.
 	opts = o
+	set.BoolVarP(&opts.Destructive, "destructive", "d", false, "Is this tool capable of performing destructive actions?")
+	set.BoolVarP(&opts.Readonly, "readonly", "r", false, "Is this tool readonly?")
+
+	cmd.Flags().AddFlagSet(set)
 
 	return cmd
 }

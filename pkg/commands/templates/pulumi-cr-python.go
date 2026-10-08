@@ -1,10 +1,6 @@
 package templates
 
 import (
-	"os"
-	"text/template"
-
-	"github.com/Masterminds/sprig/v3"
 	"github.com/fire833/tmpl/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -18,7 +14,7 @@ func NewPULUMIPYTHONCRCommand() *cobra.Command {
 		Package   *string
 		Module    *string
 		Namespace *string
-		Args      *bool
+		Args      bool
 	}
 
 	const tmpl string = `
@@ -51,39 +47,26 @@ class {{ .Name }}(ComponentResource):
 		Long:    "",
 		Version: "0.0.1",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.Output)
-			if oute != nil {
-				return oute
-			}
-
-			defer output.Close()
-
-			tpl, tple := template.New("PulumiPythonCR").Funcs(sprig.TxtFuncMap()).Parse(tmpl)
-			if tple != nil {
-				return tple
-			}
-
-			return tpl.Execute(output, opts)
+			return utils.RenderTemplateToOutput(cmd.OutOrStdout(), *opts.Output, "PulumiPythonCR", tmpl, opts)
 		},
 	}
 
 	set := pflag.NewFlagSet("PulumiPythonCR", pflag.ExitOnError)
 
-	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
-	str := string(data)
-
 	o := cmdOpts{
 		Output:    set.StringP("output", "o", "tmpl.py", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:    &str,
+		Header:    utils.HeaderFlag(set),
 		Name:      set.StringP("name", "n", "ExampleInstance", "Specify the name of the component resource you wish to create."),
 		Package:   set.StringP("package", "p", "unknown", "Specify the package name the component resource is a part of."),
 		Module:    set.StringP("module", "m", "unknown", "Specify the high-level module this component resource is a part of."),
 		Namespace: set.String("namespace", "unknown", "Specify the namespace for this component resource within your overall stack."),
-		Args:      set.BoolP("args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource."),
 	}
 
-	cmd.Flags().AddFlagSet(set)
+	// Bools are bound by value, since a template treats any non-nil *bool as true.
 	opts = o
+	set.BoolVarP(&opts.Args, "args", "a", false, "Specify whether an additional arguments struct should be generated for your component resource.")
+
+	cmd.Flags().AddFlagSet(set)
 
 	return cmd
 }

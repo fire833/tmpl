@@ -19,10 +19,6 @@
 package templates
 
 import (
-	"os"
-	"text/template"
-
-	"github.com/Masterminds/sprig/v3"
 	"github.com/fire833/tmpl/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -126,30 +122,15 @@ func (s *{{ .SubsystemName }}Manager) Collect(chan<- prometheus.Metric) {}
 		Long:    "",
 		Version: "0.0.1",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.Output)
-			if oute != nil {
-				return oute
-			}
-
-			defer output.Close()
-
-			tpl, tple := template.New("gosubsystem").Funcs(sprig.TxtFuncMap()).Parse(tmpl)
-			if tple != nil {
-				return tple
-			}
-
-			return tpl.Execute(output, opts)
+			return utils.RenderTemplateToOutput(cmd.OutOrStdout(), *opts.Output, "gosubsystem", tmpl, opts)
 		},
 	}
 
 	set := pflag.NewFlagSet("gosubsystem", pflag.ExitOnError)
 
-	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
-	str := string(data)
-
 	o := cmdOpts{
 		Output:         set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:         &str,
+		Header:         utils.HeaderFlag(set),
 		Package:        set.StringP("package", "p", "templates", "Specify the output package for this new template being created."),
 		SubsystemName:  set.StringP("name", "n", "", "Specify the name for this subsystem."),
 		SubsystemShort: set.StringP("short", "s", "", "Specify the short name for the subsystem."),

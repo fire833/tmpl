@@ -1,10 +1,6 @@
 package templates
 
 import (
-	"os"
-	"text/template"
-
-	"github.com/Masterminds/sprig/v3"
 	"github.com/fire833/tmpl/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -130,30 +126,15 @@ public final class Application implements GLEventListener, Runnable {
 		Long:    "",
 		Version: "0.0.1",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.Output)
-			if oute != nil {
-				return oute
-			}
-
-			defer output.Close()
-
-			tpl, tple := template.New("JavaOpenGL").Funcs(sprig.TxtFuncMap()).Parse(tmpl)
-			if tple != nil {
-				return tple
-			}
-
-			return tpl.Execute(output, opts)
+			return utils.RenderTemplateToOutput(cmd.OutOrStdout(), *opts.Output, "JavaOpenGL", tmpl, opts)
 		},
 	}
 
 	set := pflag.NewFlagSet("JavaOpenGL", pflag.ExitOnError)
 
-	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
-	str := string(data)
-
 	o := cmdOpts{
 		Output:     set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:     &str,
+		Header:     utils.HeaderFlag(set),
 		Package:    set.StringP("package", "p", "", "Specify the package name for this new application."),
 		Name:       set.StringP("name", "n", "Kendall's Homework", "Specify the output name for this JOGL application (what will the window name be?)"),
 		DimensionX: set.UintP("dimx", "x", 1280, "Specify the preferred X dimension for created window."),

@@ -19,10 +19,6 @@
 package templates
 
 import (
-	"os"
-	"text/template"
-
-	"github.com/Masterminds/sprig/v3"
 	"github.com/fire833/tmpl/pkg/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -71,30 +67,15 @@ export default class {{.Name}} extends Component<{{.Name}}Props, {{.Name}}State>
 		Long:    "",
 		Version: "0.0.2",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			output, oute := utils.GetOutputWriter(*opts.Output)
-			if oute != nil {
-				return oute
-			}
-
-			defer output.Close()
-
-			tpl, tple := template.New("reactClass").Funcs(sprig.TxtFuncMap()).Parse(tmpl)
-			if tple != nil {
-				return tple
-			}
-
-			return tpl.Execute(output, opts)
+			return utils.RenderTemplateToOutput(cmd.OutOrStdout(), *opts.Output, "reactClass", tmpl, opts)
 		},
 	}
 
 	set := pflag.NewFlagSet("reactClass", pflag.ExitOnError)
 
-	data, _ := os.ReadFile(*set.StringP("header", "f", "hack/boilerplate.go.txt", "Specify an optional header to apply to generated files."))
-	str := string(data)
-
 	o := cmdOpts{
 		Output: set.StringP("output", "o", "tmpl.tsx", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header: &str,
+		Header: utils.HeaderFlag(set),
 		Name:   set.StringP("compname", "n", "KTComponent", "Specify the name of the component you wish to create."),
 	}
 
