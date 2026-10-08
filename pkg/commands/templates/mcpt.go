@@ -30,10 +30,12 @@ import (
 
 func NewMCPTOOLCommand() *cobra.Command {
 	type cmdOpts struct {
-		Output  *string
-		Header  *string
-		Name    *string
-		Package *string
+		Output      *string
+		Header      *string
+		Name        *string
+		Package     *string
+		Readonly    *bool
+		Destructive *bool
 	}
 
 	const tmpl string = `
@@ -50,7 +52,10 @@ import (
 
 func New{{ .Name }}Tool() server.ServerTool {
 	return server.ServerTool{
-		Tool: mcp.NewTool("{{ .Name }}", mcp.WithDescription("")),
+		Tool: mcp.NewTool("{{ .Name }}", mcp.WithDescription(""), 
+			mcp.WithReadOnlyHintAnnotation({{ if .Readonly }}true{{ else }}false{{ end }}),
+			mcp.WithDestructiveHintAnnotation({{ if .Destructive }}true{{ else }}false{{ end }}),
+		),
 		Handler: {{ .Name | lower }}Tool,
 	}
 }
@@ -67,7 +72,7 @@ func {{ .Name | lower }}Tool(ctx context.Context, request mcp.CallToolRequest) (
 		Aliases: []string{"mcpt"},
 		Short:   "Generate boilerplate for creating new mcptool templates.",
 		Long:    "",
-		Version: "0.0.1",
+		Version: "0.2.0",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			output, oute := utils.GetOutputWriter(*opts.Output)
 			if oute != nil {
@@ -91,10 +96,12 @@ func {{ .Name | lower }}Tool(ctx context.Context, request mcp.CallToolRequest) (
 	str := string(data)
 
 	o := cmdOpts{
-		Output:  set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
-		Header:  &str,
-		Name:    set.StringP("name", "n", "", "Specify the name of this tool."),
-		Package: set.StringP("package", "p", "templates", "Specify the output package for this new tool template being created."),
+		Output:      set.StringP("output", "o", "tmpl.tmpl", "Specify the output location for this template. If set to '-', will print to stdout."),
+		Header:      &str,
+		Name:        set.StringP("name", "n", "", "Specify the name of this tool."),
+		Package:     set.StringP("package", "p", "templates", "Specify the output package for this new tool template being created."),
+		Destructive: set.BoolP("destructive", "d", false, "Is this tool capable of performing destructive actions?"),
+		Readonly:    set.BoolP("readonly", "r", false, "Is this tool readonly?"),
 	}
 
 	cmd.Flags().AddFlagSet(set)
